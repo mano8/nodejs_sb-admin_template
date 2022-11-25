@@ -1,0 +1,65 @@
+extends base-login.pug
+
+block headTitle
+  title Login
+
+block headMeta
+  meta(name='description', content='Login page')
+  meta(name='author', content='Eli Serra')
+
+block pageContent
+  div#layoutAuthentication
+    div#layoutAuthentication_content
+      main 
+        div.container
+          div.row.justify-content-center
+            div.col-lg-5
+              div.card.shadow-lg.border-0.rounded-lg.mt-5
+                div.card-header
+                  h3.text-center.font-weight-light.my-4 MyApp
+                div.card-body
+                  form(action='/login' method='post')
+                    if page && page.showSocialAuth
+                      div.container-fluid.px-4
+                        div.text-center.py-3
+                          h3 Log in to your account
+                        div.text-center.py-3
+                          div(class="btn-group mx-auto" role="group" aria-label="Vertical button group")
+                            if page.showSocialAuth.google 
+                              a(type="button" class="btn btn-outline-dark text-center" href="/login/google")
+                                div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
+                                  div.p-2
+                                    i.fa-brands.fa-google
+                                  div.p-2
+                                    |
+                                    |  Google
+                            if page.showSocialAuth.github 
+                              a(type="button" role="button" class="btn btn-outline-dark" href="/login/github")
+                                div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
+                                  div.p-2
+                                    i.fa-brands.fa-github
+                                  div.p-2
+                                    |
+                                    |  Github
+                      hr
+                    div.form-floating.mb-3
+                      input(class="form-control" id="inputEmail" name="inputEmail" type="email" placeholder="name@example.com")
+                      label(for="inputEmail") Email address
+                    div.form-floating.mb-3
+                      input(class="form-control" id="inputPassword" name="inputPassword" type="password" placeholder="Password")
+                      label(for="inputPassword") Password
+                    div.form-check.mb-3
+                      input(class="form-check-input" id="inputRememberPassword" name="inputRememberPassword" type="checkbox" value="")
+                      label(class="form-check-label" for="inputRememberPassword") Remember Password
+                    div.d-flex.align-items-center.justify-content-between.mt-4.mb-0
+                      a(class="small" href="/forgot-password") Forgot Password?
+                      button(class="btn btn-primary" role="button" type="submit") Login
+                div.card-footer.text-center.py-3
+                  div.small
+                    a(href="register.html") Need an account? Sign up!
+    div#layoutAuthentication_footer
+      include parts/footer.pug
+
+
+
+

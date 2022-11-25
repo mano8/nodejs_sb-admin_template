@@ -1,0 +1,41 @@
+html 
+  head 
+    block headTitle
+      title Mano8 Consomption app
+    block headMetaMain
+      meta(charset='utf-8')
+      meta(http-equiv='X-UA-Compatible', content='IE=edge')
+      meta(name='viewport', content='width=device-width, initial-scale=1')
+    block headMeta
+      meta(name='description', content='Home page')
+      meta(name='author', content='sb-admin')
+    block headStylesMain
+      link(rel='stylesheet', href='/public/css/styles.css')
+      link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css')
+    block headStyles
+    block headScriptsMain
+      script(src='https://use.fontawesome.com/releases/v6.1.0/js/all.js', crossorigin="anonymous")
+    block headScripts
+
+  body.sb-nav-fixed
+    include menus/nav-menu.pug
+    
+    
+    div#layoutSidenav
+      include menus/main-menu.pug
+          
+      div#layoutSidenav_content
+        include parts/content.pug
+
+        include parts/footer.pug
+
+    block footerScriptsMain
+        script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js', crossorigin="anonymous")
+        script(src='/public/js/scripts.js')
+    block footerScripts
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js', crossorigin="anonymous")
+        script(src='/public/assets/demo/chart-area-demo.js')
+        script(src='/public/assets/demo/chart-bar-demo.js', crossorigin="anonymous")
+        script(src='https://cdn.jsdelivr.net/npm/simple-datatables@latest', crossorigin="anonymous")
+        script(src='/public/js/datatables-simple-demo.js')
+

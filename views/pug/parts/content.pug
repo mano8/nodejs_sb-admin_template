@@ -1,0 +1,58 @@
+main 
+  div.container-fluid.px-4
+    block pageTitle
+        h1.mt-4 Default Title
+    block pageBreadcrumbs
+        ol.breadcrumb.mb-4
+        li.breadcrumb-item.active Home
+    block pageContent
+      div.row
+        div.col-xl-3.col-md-6
+          div.card.bg-primary.text-white.mb-4
+            div.card-body Primary Card
+            div.card-footer.d-flex.align-items-center.justify-content-between
+              a(class="small text-white stretched-link" href="#") View Details
+              div.small.text-white
+                i.fas.fa-angle-right
+        div.col-xl-3.col-md-6
+          div.card.bg-warning.text-white.mb-4
+            div.card-body Warning Card
+            div.card-footer.d-flex.align-items-center.justify-content-between
+              a(class="small text-white stretched-link" href="#") View Details
+              div.small.text-white
+                i.fas.fa-angle-right
+        div.col-xl-3.col-md-6
+          div.card.bg-success.text-white.mb-4
+            div.card-body Success Card
+            div.card-footer.d-flex.align-items-center.justify-content-between
+              a(class="small text-white stretched-link" href="#") View Details
+              div.small.text-white
+                i.fas.fa-angle-right
+        div.col-xl-3.col-md-6
+          div.card.bg-danger.text-white.mb-4
+            div.card-body Danger Card
+            div.card-footer.d-flex.align-items-center.justify-content-between
+              a(class="small text-white stretched-link" href="#") View Details
+              div.small.text-white
+                i.fas.fa-angle-right
+      div.row 
+        div.col-xl-6
+          div.card.mb-4
+            div.card-header
+              i.fas.fa-chart-area.me-1
+              | Area Chart Example
+            div.card-body
+              canvas(id="myAreaChart" width="100%" height="40")
+        div.col-xl-6
+          div.card.mb-4
+            div.card-header
+              i.fas.fa-chart-area.me-1
+              | Bar Chart Example
+            div.card-body
+              canvas(id="myBarChart" width="100%" height="40")
+      div.card.mb-4
+        div.card-header
+          i.fas.fa-table.me-1
+          | DataTable Example
+        div.card-body
+          table#datatablesSimple

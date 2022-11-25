@@ -1,0 +1,32 @@
+div#layoutSidenav_nav
+  nav(class='sb-sidenav accordion sb-sidenav-dark', id='sidenavAccordion' )
+    div.sb-sidenav-menu
+      div.nav
+        div.sb-sidenav-menu-heading Core
+        a(class='nav-link' href='/') 
+          div.sb-nav-link-icon
+            i(class='fas fa-tachometer-alt')
+          | Dashboard
+        div.sb-sidenav-menu-heading Interface
+        a(class='nav-link collapsed' href='#' data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts")
+          div.sb-nav-link-icon
+            i(class='fas fa-columns')
+          | Layouts
+          div.sb-sidenav-collapse-arrow
+            i(class='fas fa-angle-down')
+        div(class='collapse'  id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion")
+          nav.sb-sidenav-menu-nested.nav
+            a(class='nav-link' href='/') Static Navigation
+            a(class='nav-link' href='/') Light Sidenav
+        a(class='nav-link collapsed' href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages")
+          div.sb-nav-link-icon
+            i(class='fas fa-book-open')
+          | Pages
+          div.sb-sidenav-collapse-arrow
+            i(class='fas fa-angle-down')
+          
+
+    div.sb-sidenav-footer
+      block userAnounce
+          div.small Logged in as:
+          | Start Bootstrap
