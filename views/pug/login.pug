@@ -18,6 +18,8 @@ block pageContent
                 div.card-header
                   h3.text-center.font-weight-light.my-4 MyApp
                 div.card-body
+                  block messageAlert
+                    include parts/message.pug
                   form(action='/login' method='post')
                     if page && page.showSocialAuth
                       div.container-fluid.px-4
@@ -43,11 +45,11 @@ block pageContent
                                     |  Github
                       hr
                     div.form-floating.mb-3
-                      input(class="form-control" id="inputEmail" name="inputEmail" type="email" placeholder="name@example.com")
-                      label(for="inputEmail") Email address
+                      input(class="form-control" id="username" name="username" type="text" placeholder="name@example.com")
+                      label(for="username") Login
                     div.form-floating.mb-3
-                      input(class="form-control" id="inputPassword" name="inputPassword" type="password" placeholder="Password")
-                      label(for="inputPassword") Password
+                      input(class="form-control" id="password" name="password" type="password" placeholder="Password")
+                      label(for="password") Password
                     div.form-check.mb-3
                       input(class="form-check-input" id="inputRememberPassword" name="inputRememberPassword" type="checkbox" value="")
                       label(class="form-check-label" for="inputRememberPassword") Remember Password
@@ -56,7 +58,7 @@ block pageContent
                       button(class="btn btn-primary" role="button" type="submit") Login
                 div.card-footer.text-center.py-3
                   div.small
-                    a(href="register.html") Need an account? Sign up!
+                    a(href="/register") Need an account? Sign up!
     div#layoutAuthentication_footer
       include parts/footer.pug
 
