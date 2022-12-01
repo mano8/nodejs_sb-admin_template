@@ -1,0 +1,74 @@
+extends base.pug
+
+
+block pageTitle
+  if page && page.title
+    h1.mt-4 #{page.title}
+  else 
+    h1.mt-4 Home
+
+block pageBreadcrumbs
+  if page && page.breadcrumbs
+    ol.breadcrumb.mb-4
+      each val, index in page.breadcrumbs
+        if page.name = val.name
+          li.breadcrumb-item.active  #{val.text}
+        else 
+          li.breadcrumb-item  #{val.text}
+  else
+    ol.breadcrumb.mb-4
+      li.breadcrumb-item.active Home
+
+block pageContent
+  div.row
+    div.col-xl-4.col-md-6
+      div.card.bg-dark.text-white.mb-4.text-center
+        div.profile-img-pain
+          a(href="/user/edit-avatar")
+            div.profile-img-edit
+                i.fa-solid.fa-pencil.fa-xl
+          img(src="/public/assets/img/index.png" class="card-img-top profile-img" alt="...")
+          
+        div.card-body 
+            h3.card-title #{user.firstName} #{user.lastName}
+            h4.card-subtitle.mb-2.text-muted.small #{user.username}
+            
+            div.card-text Hello word
+
+        div.card-footer.d-flex.align-items-center.justify-content-between
+          a(class="small text-white stretched-link" href="#") View Details
+          div.small.text-white
+            i.fas.fa-angle-right
+    div.col-xl-8.col-md-6
+      div.container-fluid.px-4
+        div.row
+          div.col-xl-3.col-md-6
+            div.card.bg-primary.text-white.mb-4
+              div.card-body Primary Card
+              div.card-footer.d-flex.align-items-center.justify-content-between
+                a(class="small text-white stretched-link" href="#") View Details
+                div.small.text-white
+                  i.fas.fa-angle-right
+          div.col-xl-3.col-md-6
+            div.card.bg-warning.text-white.mb-4
+              div.card-body Warning Card
+              div.card-footer.d-flex.align-items-center.justify-content-between
+                a(class="small text-white stretched-link" href="#") View Details
+                div.small.text-white
+                  i.fas.fa-angle-right
+          div.col-xl-3.col-md-6
+            div.card.bg-success.text-white.mb-4
+              div.card-body Success Card
+              div.card-footer.d-flex.align-items-center.justify-content-between
+                a(class="small text-white stretched-link" href="#") View Details
+                div.small.text-white
+                  i.fas.fa-angle-right
+          div.col-xl-3.col-md-6
+            div.card.bg-warning.text-white.mb-4
+              div.card-body Warning Card
+              div.card-footer.d-flex.align-items-center.justify-content-between
+                a(class="small text-white stretched-link" href="#") View Details
+                div.small.text-white
+                  i.fas.fa-angle-right
+          
+    
