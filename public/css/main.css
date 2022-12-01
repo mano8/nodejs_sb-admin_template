@@ -1,0 +1,24 @@
+
+/* Profile */
+.profile-img-pain{
+    height: 450px;
+    width: 100%;
+}
+    .profile-img{
+        border: none;
+        border-radius: 100%;
+        height: 400px;
+        width: 400px;
+        margin: 25px auto;
+    }
+
+    .profile-img-edit{
+        position: absolute;
+        top: 400px;
+        left: 80%;
+        z-index: 99;
+        width: 38px;
+        height: 38px;
+        margin-bottom: 32px;
+        margin-left: -40px;
+    }
