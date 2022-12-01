@@ -29,7 +29,7 @@ module.exports = (app) => {
               }
         
             }
-            res.render('login', { 
+            res.render('user/login', { 
               page: page,
               user: user 
             });
@@ -45,7 +45,7 @@ module.exports = (app) => {
     
     /*app.route('/login/google')
         .get(function (req, res) {
-            res.render('login', { 
+            res.render('user/login', { 
             page: page,
             user: user 
             });
@@ -63,7 +63,7 @@ module.exports = (app) => {
     
     app.route('/forgot-password')
         .get(function (req, res) {
-            res.render('forgot', { 
+            res.render('user/forgot', { 
               page: page,
               user: user 
             });
@@ -75,7 +75,7 @@ module.exports = (app) => {
     app.route('/register')
         .get(function (req, res) {
           
-          res.render('register', { 
+          res.render('user/register', { 
             page: page,
             user: user
             });
@@ -111,7 +111,7 @@ module.exports = (app) => {
                 {name: "Profile", link: '', text: "Profile"}
               ]
             };
-            res.render('profile', { 
+            res.render('user/profile', { 
               page: page,
               user: req.user 
             });

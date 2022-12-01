@@ -1,27 +1,19 @@
-const mongoose = require('mongoose')
-const validator = require('validator')
-const bcryptjs = require('bcrypt')
+const mongoose = require('mongoose');
+const bcryptjs = require('bcrypt');
 
-//-> ToDo: Remove validator use only express-validator before execute request on model
 //-> see: https://stackoverflow.com/questions/61688724/what-is-the-difference-between-mongoose-validation-and-using-express-validator
+//-> validate data before save or update
 let userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
     unique: true,
-    validate: {
-      validator: value => validator.isAlphanumeric(value),
-      message: props => `${props.value} is not a valid username!`
-    }
+    trim: true
   },
   firstName: {
     type: String,
     required: true,
-    trim: true,
-    validate: {
-      validator: value => validator.isAlphanumeric(value),
-      message: props => `${props.value} is not a valid first name!`
-    }
+    trim: true
   },
   lastName: {
     type: String,
@@ -32,21 +24,14 @@ let userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    validate: {
-      validator: value => validator.isEmail(value),
-      message: props => `${props.value} is not a valid email!`
-    }
+    trim: true
   },
   password: {
     type: String,
     required: true,
   },
   photo: {
-    type: String,
-    validate: {
-      validator: value => validator.isDataURI(value),
-      message: props => `${props.value} is not a valid image url!`
-    }
+    type: String
   },
   created_on: {
     type: String,

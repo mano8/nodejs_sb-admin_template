@@ -201,7 +201,7 @@ exports.registerUser = (req, res, next) => {
   if (!errors.isEmpty()) {
     res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
     res.locals.form = req.body
-    res.render('register', 
+    res.render('user/register', 
       /*{ 
         page: page,
         user: user

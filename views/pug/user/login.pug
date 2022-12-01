@@ -19,7 +19,7 @@ block pageContent
                   h3.text-center.font-weight-light.my-4 MyApp
                 div.card-body
                   block messageAlert
-                    include parts/message.pug
+                    include ../parts/message.pug
                   form(action='/login' method='post')
                     if page && page.showSocialAuth
                       div.container-fluid.px-4
@@ -60,7 +60,7 @@ block pageContent
                   div.small
                     a(href="/register") Need an account? Sign up!
     div#layoutAuthentication_footer
-      include parts/footer.pug
+      include ../parts/footer.pug
 
 
 
