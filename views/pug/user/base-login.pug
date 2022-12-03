@@ -1,27 +1,9 @@
-html 
-  head 
-    block headTitle
-      title Mano8 Consomption app
-    block headMetaMain
-      meta(charset='utf-8')
-      meta(http-equiv='X-UA-Compatible', content='IE=edge')
-      meta(name='viewport', content='width=device-width, initial-scale=1')
-    block headMeta
-      meta(name='description', content='Home page')
-      meta(name='author', content='sb-admin')
-    block headStylesMain
-      link(rel='stylesheet', href='/public/css/styles.css')
-    block headStyles
-    block headScriptsMain
-      script(src='https://use.fontawesome.com/releases/v6.1.0/js/all.js', crossorigin="anonymous")
-    block headScripts
+extends ../base.pug
 
-  body.bg-primary    
+block body
+  body.bg-primary
+
     block pageContent
 
-    block footerScriptsMain
-        script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js', crossorigin="anonymous")
-        script(src='/public/js/scripts.js')
-    block footerScripts
         
 
