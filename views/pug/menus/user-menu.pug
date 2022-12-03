@@ -1,5 +1,5 @@
 ul(class='dropdown-menu dropdown-menu-end', aria-labelledby="navbarDropdown")
-  if user && user.username
+  if isAuthenticated
     li 
       a(class='dropdown-item' href="/profile") Profile
     li 
