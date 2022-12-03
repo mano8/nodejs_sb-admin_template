@@ -2,10 +2,7 @@ extends ../base.pug
 
 
 block pageTitle
-  if page && page.title
-    h1.mt-4 #{page.title}
-  else 
-    h1.mt-4 Home
+  h1.mt-4 #{user.name} Profile
 
 block pageBreadcrumbs
   if page && page.breadcrumbs
@@ -30,10 +27,10 @@ block pageContent
           img(src="/public/assets/img/index.png" class="card-img-top profile-img" alt="...")
           
         div.card-body 
-            h3.card-title #{user.firstName} #{user.lastName}
+            h3.card-title #{user.name} (#{user.username})
             h4.card-subtitle.mb-2.text-muted.small #{user.username}
             
-            div.card-text Hello word
+            div.card-text ....
 
         div.card-footer.d-flex.align-items-center.justify-content-between
           a(class="small text-white stretched-link" href="#") View Details
