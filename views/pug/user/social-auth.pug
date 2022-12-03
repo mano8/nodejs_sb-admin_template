@@ -1,0 +1,24 @@
+block SocialAuth
+  if showSocialAuth && showSocialAuth.isActive
+    div.container-fluid.px-4
+      div.text-center.py-3
+        h3 #{title_social_auth}
+      div.text-center.py-3
+        div(class="btn-group mx-auto" role="group" aria-label="Vertical button group")
+          if showSocialAuth.google == 'true'
+            a(type="button" class="btn btn-outline-dark text-center" href="/login/google")
+              div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
+                div.p-2
+                  i.fa-brands.fa-google
+                div.p-2
+                  |
+                  |  Google
+          if showSocialAuth.github == 'true'
+            a(type="button" role="button" class="btn btn-outline-dark" href="/login/github")
+              div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
+                div.p-2
+                  i.fa-brands.fa-github
+                div.p-2
+                  |
+                  |  Github
+    hr

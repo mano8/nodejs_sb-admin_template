@@ -19,29 +19,8 @@ block pageContent
                   h3.text-center.font-weight-light.my-4 MyApp - Registration
                 div.card-body
                   form(action='/register' method='post')
-                    if page && page.showSocialAuth
-                      div.container-fluid.px-4
-                        div.text-center.py-3
-                          h3 Create your account
-                        div.text-center.py-3
-                          div(class="btn-group mx-auto" role="group" aria-label="Vertical button group")
-                            if page.showSocialAuth.google 
-                              a(type="button" class="btn btn-outline-dark text-center" href="/login/google")
-                                div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
-                                  div.p-2
-                                    i.fa-brands.fa-google
-                                  div.p-2
-                                    |
-                                    |  Google
-                            if page.showSocialAuth.github 
-                              a(type="button" role="button" class="btn btn-outline-dark" href="/login/github")
-                                div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
-                                  div.p-2
-                                    i.fa-brands.fa-github
-                                  div.p-2
-                                    |
-                                    |  Github
-                      hr
+                    - var title_social_auth = "Register with your account"
+                    include social-auth.pug
                     if errors 
                       - var errorTmp = false
                     div.form-floating.mb-3
