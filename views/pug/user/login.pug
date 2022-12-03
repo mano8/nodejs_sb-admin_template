@@ -21,13 +21,13 @@ block pageContent
                   block messageAlert
                     include ../parts/message.pug
                   form(action='/login' method='post')
-                    if page && page.showSocialAuth
+                    if showSocialAuth && (showSocialAuth.google || showSocialAuth.github)
                       div.container-fluid.px-4
                         div.text-center.py-3
                           h3 Log in to your account
                         div.text-center.py-3
                           div(class="btn-group mx-auto" role="group" aria-label="Vertical button group")
-                            if page.showSocialAuth.google 
+                            if showSocialAuth.google == 'true'
                               a(type="button" class="btn btn-outline-dark text-center" href="/login/google")
                                 div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
                                   div.p-2
@@ -35,7 +35,7 @@ block pageContent
                                   div.p-2
                                     |
                                     |  Google
-                            if page.showSocialAuth.github 
+                            if showSocialAuth.github == 'true'
                               a(type="button" role="button" class="btn btn-outline-dark" href="/login/github")
                                 div.d-flex.flex-row.align-items-center.justify-content-between.mt-0.mb-0
                                   div.p-2
