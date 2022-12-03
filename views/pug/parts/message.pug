@@ -1,16 +1,16 @@
-if page.messages
-    if page.messages.error && page.messages.error.length > 0
+if messages
+    if messages.error && messages.error.length > 0
       div(class='alert alert-danger' role="alert")
-        each val in page.messages.error
+        each val in messages.error
           |  #{val}
           br
-    else if page.messages.info && page.messages.info.length > 0
+    else if messages.info && messages.info.length > 0
       div(class='alert alert-info' role="alert")
-        each val in page.messages.info
+        each val in messages.info
           |  #{val}
           br
-    else if page.messages.success && page.messages.success.length > 0
+    else if messages.success && messages.success.length > 0
       div(class='alert alert-success' role="alert")
-        each val in page.messages.success
+        each val in messages.success
           |  #{val}
           br
