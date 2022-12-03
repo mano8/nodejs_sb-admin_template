@@ -110,26 +110,43 @@ module.exports = (app) => {
         });
     
     app.route('/user/edit-avatar')
-      .get(function(req, res) {
+      .get(mid.ensureAuthenticated, function(req, res) {
         res.json({'error': 'This functionality is not ready.'});
       })
-      .post(function(req, res) {
+      .post(mid.ensureAuthenticated, function(req, res) {
         res.json({'error': 'This functionality is not ready.'});
       });
     
     app.route('/user/edit-password')
-      .get(function(req, res) {
-        res.json({'error': 'This functionality is not ready.'});
+      .get(mid.ensureAuthenticated, function(req, res) {
+        let page = {
+          name: "EditMyPassword",
+          title: "MyApp - Edit My Password",
+          breadcrumbs: [
+            {name: "User", link: '/profile', text: "User"},
+            {name: "EditMyPassword", link: '', text: "Edit My Password"}
+          ]
+        };
+        res.render('user/edit-password', { 
+          page: page
+        });
       })
-      .post(function(req, res) {
-        res.json({'error': 'This functionality is not ready.'});
-      });
+      .post(
+        [
+          mid.ensureAuthenticated,
+          checkSchema(mid.editPasswordSchema),
+          mid.updatePassword,          
+        ],
+        (req, res) => {
+          console.log('[EditMyPassword] logged in, redirect to profile:')
+          res.redirect('/profile');
+        });
     
     app.route('/user/edit-profile')
-      .get(function(req, res) {
+      .get(mid.ensureAuthenticated, function(req, res) {
         res.json({'error': 'This functionality is not ready.'});
       })
-      .post(function(req, res) {
+      .post(mid.ensureAuthenticated, function(req, res) {
         res.json({'error': 'This functionality is not ready.'});
       });
 } 

@@ -1,5 +1,7 @@
 //js
 var crypto = require("crypto");
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
 var axios = require("axios");
 const User = require('../models/User');
 const Utils = require('../utils/utils.js');
@@ -169,6 +171,42 @@ exports.registrationSchema = {
       errorMessage: "Email is not valid."
   }
 }
+
+//-> edit password form validation
+exports.editPasswordSchema = {
+  password: {
+    custom: {
+      options: (value, { req }) => {
+          return User.findOne({
+            _id: req.body._id
+            })
+              .then((user) => {
+                  if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+                      return Promise.reject('Error, please verrify your actual password.')
+                  }
+              })
+      }
+    }
+  },
+  newPassword: {
+    isStrongPassword: {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1
+    },
+    errorMessage: "Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, and one number"
+  },
+  passwordControl: {
+      custom: {
+        options: (value, { req }) => {
+          return value === req.body.newPassword;
+        }
+      },
+      errorMessage: "Passwords do not match",
+  }
+}
+
 exports.ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     
@@ -201,11 +239,7 @@ exports.registerUser = (req, res, next) => {
   if (!errors.isEmpty()) {
     res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
     res.locals.form = req.body
-    res.render('user/register', 
-      /*{ 
-        page: page,
-        user: user
-      }*/);
+    res.render('user/register');
   }
   else{
     //-> 
@@ -221,6 +255,39 @@ exports.registerUser = (req, res, next) => {
           console.log('[register] Ok go to next:', user)
           next(null, user);
         }
+    })
+  }
+}
+
+exports.updatePassword = (req, res, next) => {
+  // Validate incoming input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
+    res.locals.form = req.body
+    let page = {
+      name: "EditMyPassword",
+      title: "MyApp - Edit My Password",
+      breadcrumbs: [
+        {name: "User", link: '/profile', text: "User"},
+        {name: "EditMyPassword", link: '', text: "Edit My Password"}
+      ]
+    };
+    res.render('user/edit-password', { 
+      page: page
+    });
+  }
+  else{
+    User.findOneAndUpdate({"_id": req.body._id}, {"password": bcrypt.hashSync(req.body.newPassword, 12)}, { new: false }, (err, user) =>   {
+      if (err){
+        console.log('[updatePassword] Error, redirect to home :', err)
+        next(err);
+      }
+      else{
+        req.flash('success', "Your password have been updated with success.");
+        console.log('[updatePassword] Ok go to next:', user)
+        next(null, user);
+      }
     })
   }
 }
