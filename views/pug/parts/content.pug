@@ -2,8 +2,19 @@
 block pageTitle
     h1.mt-4 Default Title
 block pageBreadcrumbs
+  if page && page.breadcrumbs
     ol.breadcrumb.mb-4
-    li.breadcrumb-item.active Home
+      each val, index in page.breadcrumbs
+        if page.name == val.name
+          li.breadcrumb-item.active  #{val.text}
+        else 
+          li.breadcrumb-item  
+            a(href=(val.link) ? val.link : "#" class='link-dark')
+              | #{val.text}
+  else
+    ol.breadcrumb.mb-4
+      li.breadcrumb-item.active Home
+
 block pageContent
   div.row
     div.col-xl-3.col-md-6
