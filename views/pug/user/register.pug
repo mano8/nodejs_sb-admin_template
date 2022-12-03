@@ -82,7 +82,7 @@ block pageContent
                     div.form-floating.mb-3
                       - errorTmp = errors && errors.passwordControl ? errors.passwordControl : false
                       input(class=errorTmp ? "form-control is-invalid" : "form-control" id="passwordControl" name="passwordControl" type="password" placeholder="Password" value= form && form.passwordControl ? form.passwordControl : '' required)
-                      label(for="passwordControl") Re-type Password
+                      label(for="passwordControl") Confirm Password
                       if errorTmp.msg
                         div.invalid-feedback
                           | #{errorTmp.msg}
