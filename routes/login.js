@@ -12,26 +12,16 @@ let page = {
     github: false
   }*/
 };
-let user;
+
 module.exports = (app) => {
     app.route('/login')
         .get(function (req, res) {
-            console.log("login message: ", req.session.messages);
-            req.flash('error', req.session.messages);
-            delete req.session.messages
             let page = {
               name: "Login",
-              title: "MyApp - Login",
-              messages: {
-                error: req.flash('error') || null,
-                info: req.flash('info') || null,
-                success: req.flash('success') || null
-              }
-        
+              title: "MyApp - Login"
             }
             res.render('user/login', { 
-              page: page,
-              user: user 
+              page: page
             });
         })
         .post(passport.authenticate('local', {
@@ -46,8 +36,7 @@ module.exports = (app) => {
     /*app.route('/login/google')
         .get(function (req, res) {
             res.render('user/login', { 
-            page: page,
-            user: user 
+            page: page
             });
         });*/
 
@@ -64,8 +53,7 @@ module.exports = (app) => {
     app.route('/forgot-password')
         .get(function (req, res) {
             res.render('user/forgot', { 
-              page: page,
-              user: user 
+              page: page
             });
         })
         .post(function (req, res) {
@@ -76,8 +64,7 @@ module.exports = (app) => {
         .get(function (req, res) {
           
           res.render('user/register', { 
-            page: page,
-            user: user
+            page: page
             });
         })
         .post(
@@ -112,8 +99,7 @@ module.exports = (app) => {
               ]
             };
             res.render('user/profile', { 
-              page: page,
-              user: req.user 
+              page: page
             });
           } catch (error) {
             console.log("error user undefined: ", error)
