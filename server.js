@@ -40,8 +40,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   name: 'M8SESS_ID',
   secret: process.env.SESSION_SECRET,
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   cookie: { 
     secure: false,
     httpOnly: true
@@ -54,47 +54,46 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-/*passport.use('local', new LocalStrategy(function verify(username, password, done){
-  console.log("[LocalStrategy] login...")
-  User.findOne({ email: username }, (err, user) => {
-    console.log(`User ${username} attempted to log in.`);
-    console.log(`User ${password} -> ${password}.`);
-    if (err) return done(err);
-    if (!user) return done(null, false);
-    if (!bcrypt.compareSync(password, user.password)) return done(null, false);
-    return done(null, user);
-  });
-}));
-passport.serializeUser((user, done) => {
-  console.log("serializeUser: ", user)
-  done(null, user._id);
-});
-
-passport.deserializeUser((id, done) => {
-  console.log("deserializeUser, id: ", id) // mongoose.Types.ObjectId(id)
-  User.findOne({ _id: id }, (err, doc) => {
-    done(null, doc);
-  });
-});*/
 
 app.use(flash());
 
-/*app.use(() => (req, res, next) => {
-
-  let pageData = {
-    name: null,
-    title: null,
-    breadcrumbs: null,
-    messages: {
-      error: req.flash('error') || null,
-      info: req.flash('info') || null,
-      success: req.flash('success') || null
-    }
-    
+const getUserView = (user) => {
+  let result;
+  if(user){
+    result = {
+      _id: user._id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      name: user.firstName + ' ' + user.lastName,
+      created_on: user.created_on,
+      updated_on: user.updated_on,
+      last_login: user.last_login,
+      login_count: user.login_count,
+    };
   }
-  req.pageData = pageData;
+  return result;
+}
+// Creating custom middleware with Express
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.isAuthenticated();
+  res.locals.user = getUserView(req.user);
+  if(req.session && req.session.messages){
+    req.flash('error', req.session.messages);
+    delete req.session.messages
+  }
+  
+  res.locals.messages = {
+    error: req.flash('error') || null,
+    info: req.flash('info') || null,
+    success: req.flash('success') || null
+  }
+  res.locals.showSocialAuth = {
+    google: false,
+    github: false
+  }
   next();
-});*/
+});
 
 //Routing for API 
 apiRoutes(app);  
@@ -104,7 +103,6 @@ auth();
 //Index page (static HTML)
 app.route('/')
   .get(function (req, res) {
-    let user;
     let page = {
       name: "Dashboard",
       title: "Dashboard",
@@ -114,19 +112,11 @@ app.route('/')
           link: '',
           text: "Dashboard",
         }
-      ],
-      messages: {
-        error: req.flash('error') || null,
-        info: req.flash('info') || null,
-        success: req.flash('success') || null
-      }
-
+      ]
     }
     console.log("Home page data: ", page)
-    console.log("Home page data, user: ", req.user)
     res.render('index', { 
-      page: page,
-      user: req.user 
+      page: page
     });
   });
 
