@@ -21,7 +21,7 @@ block pageContent
                   block messageAlert
                     include ../parts/message.pug
                   form(action='/login' method='post')
-                    if showSocialAuth && (showSocialAuth.google || showSocialAuth.github)
+                    if showSocialAuth && showSocialAuth.isActive
                       div.container-fluid.px-4
                         div.text-center.py-3
                           h3 Log in to your account

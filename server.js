@@ -89,6 +89,7 @@ app.use((req, res, next) => {
     success: req.flash('success') || null
   }
   res.locals.showSocialAuth = {
+    isActive: (process.env.AUTH_GOOGLE === 'true' || process.env.AUTH_GITHUB === 'true') ? true: false,
     google: process.env.AUTH_GOOGLE,
     github: process.env.AUTH_GITHUB
   }
