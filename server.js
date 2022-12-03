@@ -89,8 +89,8 @@ app.use((req, res, next) => {
     success: req.flash('success') || null
   }
   res.locals.showSocialAuth = {
-    google: false,
-    github: false
+    google: process.env.AUTH_GOOGLE,
+    github: process.env.AUTH_GITHUB
   }
   next();
 });
