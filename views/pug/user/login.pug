@@ -23,12 +23,22 @@ block pageContent
                   form(action='/login' method='post')
                     - var title_social_auth = "Log in to your account"
                     include social-auth.pug
+                    if errors 
+                      - var errorTmp = false
                     div.form-floating.mb-3
-                      input(class="form-control" id="username" name="username" type="text" placeholder="name@example.com")
-                      label(for="username") Login
+                      - errorTmp = errors && errors.username ? errors.username : false
+                      input(class=errorTmp ? "form-control is-invalid" : "form-control" id="username" name="username" type="text" placeholder="username" value= form && form.username ? form.username : '' required)
+                      label(for="user_name") username
+                      if errorTmp.msg
+                        div.invalid-feedback
+                          | #{errorTmp.msg}
                     div.form-floating.mb-3
-                      input(class="form-control" id="password" name="password" type="password" placeholder="Password")
+                      - errorTmp = errors && errors.password ? errors.password : false
+                      input(class=errorTmp ? "form-control is-invalid" : "form-control" id="password" name="password" type="password" placeholder="Password" value= form && form.password ? form.password : '' required)
                       label(for="password") Password
+                      if errorTmp.msg
+                        div.invalid-feedback
+                          | #{errorTmp.msg}
                     div.form-check.mb-3
                       input(class="form-check-input" id="inputRememberPassword" name="inputRememberPassword" type="checkbox" value="")
                       label(class="form-check-label" for="inputRememberPassword") Remember Password

@@ -213,7 +213,18 @@ const editPasswordSchema = {
  * Login form validation schema
  */
  const loginSchema = {
-  username: registrationSchema.username,
+  username: {
+    exists: { errorMessage: "Username is required" },
+    isString: { errorMessage: "Username should be string" },
+    custom: {
+      options: value => {
+        return utils.iskey(value)
+      },
+      errorMessage: "Invalid username, field must contain only alphanumeric characters and `_`"
+    },
+    trim: true,
+    escape: true,
+  },
   password: registrationSchema.password,
 }
 
