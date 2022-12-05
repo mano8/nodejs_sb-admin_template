@@ -5,7 +5,7 @@
 	"main": "server.js",
 	"scripts": {
 		"start": "node server.js",
-		"test": "mocha --timeout 5000 --recursive --exit --ui tdd tests/"
+		"test": "mocha --timeout 50000 --recursive --exit --ui tdd tests/"
 	},
 	"dependencies": {
 		"bcrypt": "^5.1.0",
@@ -27,6 +27,12 @@
 		"express-validator": "^6.14.2",
 		"axios": "^1.2.0"
 		
+		
+	},
+	"devDependencies": {
+		"mocha": "^10.1.0",
+		"chai": "^4.3.7",
+		"chai-http": "^4.3.0"
 	},
 	"repository": {
 		"type": "git",
