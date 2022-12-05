@@ -214,14 +214,14 @@ const editPasswordSchema = {
  */
  const loginSchema = {
   username: {
-    exists: { errorMessage: "Username is required" },
-    isString: { errorMessage: "Username should be string" },
     custom: {
       options: value => {
         return utils.iskey(value)
       },
       errorMessage: "Invalid username, field must contain only alphanumeric characters and `_`"
     },
+    isString: { errorMessage: "Username should be string" },
+    exists: { errorMessage: "Username is required" },
     trim: true,
     escape: true,
   },
