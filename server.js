@@ -101,6 +101,7 @@ const getUserView = (user) => {
 }
 // Creating custom middleware with Express
 app.use((req, res, next) => {
+  res.locals.doctype = 'html'
   res.locals.isAuthenticated = req.isAuthenticated();
   res.locals.user = getUserView(req.user);
   if(req.session && req.session.messages){
