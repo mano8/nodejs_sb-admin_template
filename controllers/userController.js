@@ -109,15 +109,7 @@ const AddNewUser = (user_data, done) => {
     
   };
 
-exports.ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    
-    return next();
-  }
-  res.redirect('/');
-}
-
-exports.getUserById = (user_id, done) => {
+const getUserById = (user_id, done) => {
   if (user_id){
     User.findById(user_id, (err, data) => done(err, data))
   }
@@ -126,7 +118,7 @@ exports.getUserById = (user_id, done) => {
   }
 }
 
-exports.getUserByName = (username, done) => {
+const getUserByName = (username, done) => {
   if (username){
     User.findByOne({username: username}, (err, data) => done(err, data))
   }
@@ -135,12 +127,41 @@ exports.getUserByName = (username, done) => {
   }
 }
 
+/**
+ * Ensure user Authenticated Middleware.
+ */
+exports.ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/');
+}
+
+/**
+ * Login user Middleware.
+ */
+ exports.loginUser = (req, res, next) => {
+  // Validate incoming input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
+    res.locals.form = req.body
+    res.status(409).render('user/login');
+  }
+  else{
+    //-> 
+    next(null, true);
+  }
+}
+
+/**
+ * Register user Middleware.
+ */
 exports.registerUser = (req, res, next) => {
   // Validate incoming input
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    req.formErrors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
-    res.locals.errors = req.formErrors
+    res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
     res.locals.form = req.body
     res.status(409).render('user/register');
   }
@@ -162,11 +183,11 @@ exports.registerUser = (req, res, next) => {
   }
 }
 
-/*
-* Dummy register user middlware for test purpose
-* Only test post request and send json response.
-* Not affect data base.
-*/
+/**
+ * Dummy register user middlware for test purpose
+ * Only test post request and send json response.
+ * Not affect data base.
+ */
 exports.registerUserTest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
