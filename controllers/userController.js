@@ -35,7 +35,7 @@ const userData = {
     },
     get_gravatar_avatar: (hash, done) => {
       axios
-        .get("https://www.gravatar.com/avatar/"+hash+".jpg")
+        .get("https://www.gravatar.com/avatar/"+hash+".jpg?d=identicon")
         .then((res) => {
           const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
           console.log('[get_gravatar_avatar] Status Code:', res.status);
@@ -55,8 +55,8 @@ const userData = {
     },
     get_user_avatar: (email, done) => {
       if( email ){
-        let hash = userData.get_gravatar_hash(result.username);
-        get_gravatar_avatar(hash, (err, avatar) => done(err, avatar))
+        let hash = userData.get_gravatar_hash(email);
+        userData.get_gravatar_avatar(hash, (err, avatar) => done(err, avatar))
       }
       else{
         done({'error': 'Email is undefined or invalid.'})
@@ -99,113 +99,15 @@ const userData = {
 
 const AddNewUser = (user_data, done) => {
     try {
-      
       let user = new User(user_data);
       user.save(function(err, data) {
         done(err, data);
       });
-      
-      
     } catch (error) {
       done(error, null);
     }
     
   };
-
-//-> registration form validation
-exports.registrationSchema = {
-  username: {
-      custom: {
-          options: value => {
-            return User.find({username: value})
-              .then(user => {
-                  if (user.length > 0) {
-                      return Promise.reject('Username already in use')
-                  }
-                  else if(!utils.iskey(value)){
-                    return Promise.reject('Invalid username, field must contain only alphanumeric characters and `_`')
-                  }
-              })
-          }
-      }
-  },
-  firstName: {
-      notEmpty: true,
-      errorMessage: "First Name field cannot be empty"
-  },
-  lastName: {
-      notEmpty: true,
-      errorMessage: "Last Name field cannot be empty"
-  },
-  password: {
-      isStrongPassword: {
-          minLength: 8,
-          minLowercase: 1,
-          minUppercase: 1,
-          minNumbers: 1
-      },
-      errorMessage: "Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, and one number",
-  },
-  passwordControl: {
-      custom: {
-        options: (value, { req }) => {
-          return value === req.body.password;
-        }
-      },
-      errorMessage: "Passwords do not match",
-  },
-  email: {
-      normalizeEmail: true,
-      custom: {
-          options: value => {
-              return User.find({
-                  email: value
-              }).then(user => {
-                  if (user.length > 0) {
-                      return Promise.reject('Email address already taken')
-                  }
-              })
-          }
-      },
-      isEmail: true,
-      errorMessage: "Email is not valid."
-  }
-}
-
-//-> edit password form validation
-exports.editPasswordSchema = {
-  password: {
-    custom: {
-      options: (value, { req }) => {
-          return User.findOne({
-            _id: req.body._id
-            })
-              .then((user) => {
-                  if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
-                      return Promise.reject('Error, please verrify your actual password.')
-                  }
-              })
-      }
-    }
-  },
-  newPassword: {
-    isStrongPassword: {
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1
-    },
-    errorMessage: "Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, and one number"
-  },
-  passwordControl: {
-      custom: {
-        options: (value, { req }) => {
-          return value === req.body.newPassword;
-        }
-      },
-      errorMessage: "Passwords do not match",
-  }
-}
 
 exports.ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
@@ -237,9 +139,10 @@ exports.registerUser = (req, res, next) => {
   // Validate incoming input
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
+    req.formErrors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
+    res.locals.errors = req.formErrors
     res.locals.form = req.body
-    res.render('user/register');
+    res.status(409).render('user/register');
   }
   else{
     //-> 
@@ -256,6 +159,28 @@ exports.registerUser = (req, res, next) => {
           next(null, user);
         }
     })
+  }
+}
+
+/*
+* Dummy register user middlware for test purpose
+* Only test post request and send json response.
+* Not affect data base.
+*/
+exports.registerUserTest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    //-> set an object of messages by field id's from errors array
+    //-> messages array ordered desc (the last first).
+    const errorsForm = errors.errors.reduce((obj, e) => {
+      if(!utils.isObject(obj[e.param])) {obj[e.param] = {msgs: []}}
+      obj[e.param]['msgs'].unshift(e.msg);
+      return obj
+    }, {});
+    res.status(409).json({status: false, errors: errorsForm, form: req.body} );
+  }
+  else{
+    res.status(200).json({status: true, form: req.body} );
   }
 }
 
