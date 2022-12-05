@@ -9,23 +9,22 @@ div#layoutSidenav_nav
               i(class='fas fa-tachometer-alt')
             | Dashboard
           if isAuthenticated
-            div.sb-sidenav-menu-heading Interface
+            div.sb-sidenav-menu-heading User
+            a(class='nav-link' href='/profile') 
+              div.sb-nav-link-icon
+                i(class='fas fa-user')
+              | Profile
             a(class='nav-link collapsed' href='#' data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts")
               div.sb-nav-link-icon
                 i(class='fas fa-columns')
-              | Layouts
+              | Edit
               div.sb-sidenav-collapse-arrow
                 i(class='fas fa-angle-down')
             div(class='collapse'  id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion")
               nav.sb-sidenav-menu-nested.nav
-                a(class='nav-link' href='/') Static Navigation
-                a(class='nav-link' href='/') Light Sidenav
-            a(class='nav-link collapsed' href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages")
-              div.sb-nav-link-icon
-                i(class='fas fa-book-open')
-              | Pages
-              div.sb-sidenav-collapse-arrow
-                i(class='fas fa-angle-down')
+                a(class='nav-link' href='/user/edit-profile') Edit Profile
+                a(class='nav-link' href='/user/edit-avatar') Edit Avatar
+                a(class='nav-link' href='/user/edit-password') Change Password
           
 
     div.sb-sidenav-footer
