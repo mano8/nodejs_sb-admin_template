@@ -177,6 +177,7 @@ exports.registerUser = (req, res, next) => {
           // The inserted document is held within
           // the ops property of the doc
           console.log('[register] Ok go to next:', user)
+          req.flash('success', `Welcome to home ${user.firstName}.`);
           next(null, user);
         }
     })
@@ -224,7 +225,7 @@ exports.updatePassword = (req, res, next) => {
     });
   }
   else{
-    User.findOneAndUpdate({"_id": req.body._id}, {"password": bcrypt.hashSync(req.body.newPassword, 12)}, { new: false }, (err, user) =>   {
+    User.findOneAndUpdate({"_id": req.body._id}, {"password": bcrypt.hashSync(req.body.password, 12)}, { new: false }, (err, user) =>   {
       if (err){
         console.log('[updatePassword] Error, redirect to home :', err)
         next(err);
