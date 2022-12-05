@@ -1,7 +1,8 @@
 'use strict';
 const passport = require('passport');
 const User = require('../models/User')
-const mid = require('../controllers/user.js')
+const mid = require('../controllers/userController.js')
+const userSchemas = require('../validation/userSchemas.js')
 const {body, checkSchema, validationResult} = require('express-validator');
 
 let page = {
@@ -69,15 +70,25 @@ module.exports = (app) => {
         })
         .post(
           [
-            checkSchema(mid.registrationSchema),
+            checkSchema(userSchemas.registrationSchema),
             mid.registerUser,
-            passport.authenticate('local', { failureRedirect: '/register' })
+            passport.authenticate('local')
           ],
           (req, res) => {
             console.log('[register] logged in, redirect to profile:')
             res.redirect('/profile');
           });
     
+    app.route('/json-test/register')
+      .post(
+        [
+          checkSchema(userSchemas.registrationSchema),
+          mid.registerUserTest
+        ],
+        (req, res) => {
+          console.log('[registerTestForm] logged in, redirect to profile:')
+          res.json({test: true});
+        });
     app.route('/logout')
         .get(function(req, res, next) {
           req.logout(function(err) {
@@ -134,7 +145,7 @@ module.exports = (app) => {
       .post(
         [
           mid.ensureAuthenticated,
-          checkSchema(mid.editPasswordSchema),
+          checkSchema(userSchemas.editPasswordSchema),
           mid.updatePassword,          
         ],
         (req, res) => {
@@ -144,7 +155,19 @@ module.exports = (app) => {
     
     app.route('/user/edit-profile')
       .get(mid.ensureAuthenticated, function(req, res) {
-        res.json({'error': 'This functionality is not ready.'});
+        let page = {
+          name: "EditMyProfile",
+          title: "MyApp - Edit My Profile",
+          breadcrumbs: [
+            {name: "User", link: '/profile', text: "User"},
+            {name: "EditMyProfile", link: '', text: "Edit My Profile"}
+          ]
+        };
+        
+        res.render('user/edit-profile', { 
+          page: page,
+          form: res.locals.user
+        });
       })
       .post(mid.ensureAuthenticated, function(req, res) {
         res.json({'error': 'This functionality is not ready.'});
