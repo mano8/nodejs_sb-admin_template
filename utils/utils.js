@@ -8,11 +8,11 @@ function Utils (){
     }
     
     this.isNumber = (value) => {
-      return !isNaN(value)
+      return !isNaN(value) && value != null
     }
   
     this.round = (value, decimals) => {
-      return (this.isNumber(value) && this.isNumber(decimals)) ? +value.toFixed(decimals) : value;
+      return (this.isNumber(value) && this.isNumber(decimals)) ? +value.toFixed(decimals) : undefined;
     }
   
     this.isStr = (value) => {
@@ -24,7 +24,38 @@ function Utils (){
     *
     */
     this.iskey = (value) => {
-      return /(?=\w{1,30}$)^([a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*)$/.test(value)
+      return this.isStr(value) && /(?=\w{1,30}$)^([a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*)$/.test(value)
+    }
+
+    /*
+    * Test if value has valid email chars.
+    *
+    */
+    this.isEmailChars = (value) => {
+      return this.isStr(value) && /^([a-z0-9._\-@]{4,80})$/i.test(value)
+    }
+
+    /*
+    * Test if value has valid password chars.
+    * can contain only [a-z0-9.\/_\-@#$%+]
+    */
+    this.isPasswordChars = (value) => {
+      return this.isStr(value) && /^([a-z0-9._\-@#$%+=]+)$/i.test(value)
+    }
+    /*
+    * Sanitize an email.
+    *
+    */
+    this.emailSanitizer = (value) => {
+      return value.replace(/([^a-z0-9._\-@]+)/gi, '');
+    }
+
+    /*
+    * Sanitize a password.
+    *
+    */
+    this.passwordSanitizer = (value) => {
+      return value.replace(/([^a-z0-9._\-@]+)/gi, '');
     }
   }
   
