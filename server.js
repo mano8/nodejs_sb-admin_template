@@ -10,11 +10,14 @@ const flash = require('connect-flash');
 const LocalStrategy = require('passport-local');
 const path = require('path');
 const bcrypt = require('bcrypt');
+const crypto = require("crypto");
 require('dotenv').config();
 var MongoStore = require('connect-mongo');
 const User = require('./models/User')
-const apiRoutes = require('./routes/login.js');
+const apiRoutes = require('./routes/user.js');
 const auth = require('./auth.js');
+const Utils = require('./utils/utils.js');
+let utils = new Utils();
 
 let app = express();
 
@@ -57,6 +60,20 @@ app.use(passport.session());
 
 app.use(flash());
 
+const get_gravatar_hash = (email, s=80) => {
+  return (utils.isStr(email)) ? crypto.createHash('md5').update(email.trim().toLowerCase()).digest("hex") : false;
+}
+
+const get_gravatar_url = (hash, s=80) => {
+  if (utils.isStr(hash)){
+    s = parseInt(s)
+    s = (s > 10 && s <= 2048 ) ? s : 80;
+    return (utils.isStr(hash)) ? "https://www.gravatar.com/avatar/"+hash+".jpg?d=identicon&s="+s : ''
+  }
+  else return '';
+  
+}
+
 const getUserView = (user) => {
   let result;
   if(user){
@@ -66,11 +83,19 @@ const getUserView = (user) => {
       firstName: user.firstName,
       lastName: user.lastName,
       name: user.firstName + ' ' + user.lastName,
+      email: user.email,
       created_on: user.created_on,
       updated_on: user.updated_on,
       last_login: user.last_login,
       login_count: user.login_count,
     };
+
+    if(!utils.isStr(user.photo)){
+      const hash = get_gravatar_hash(user.email)
+      result.photo = get_gravatar_url(hash)
+      result.photo_20 = get_gravatar_url(hash, 20)
+      result.photo_400 = get_gravatar_url(hash, 400)
+    }
   }
   return result;
 }

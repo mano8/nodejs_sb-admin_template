@@ -24,7 +24,7 @@ block pageContent
           a(href="/user/edit-avatar")
             div.profile-img-edit
                 i.fa-solid.fa-pencil.fa-xl
-          img(src="/public/assets/img/index.png" class="card-img-top profile-img" alt="...")
+          img(src=(user.photo) ? user.photo_400 : "/public/assets/img/index.png" class="card-img-top profile-img" alt="...")
           
         div.card-body 
             h3.card-title #{user.name} (#{user.username})
