@@ -127,6 +127,40 @@ const getUserByName = (username, done) => {
   }
 }
 
+const userLocals = {
+  login: {
+    title: "MyApp - Login"
+  },
+  forgot: {
+    title: "Forgot Password"
+  },
+  register: {
+    title: "Register User"
+  },
+  profile: {
+    title: "Profile",
+    breadcrumbs: [
+      {name: "User", link: '', text: "User"},
+      {name: "profile", link: '', text: "Profile"}
+    ]
+  },
+  editPassword: {
+    title: "Edit Password",
+    breadcrumbs: [
+      {name: "User", link: '/profile', text: "User"},
+      {name: "editPassword", link: '', text: "Edit Password"}
+    ]
+  },
+  editProfile: {
+    title: "Edit Profile",
+    breadcrumbs: [
+      {name: "User", link: '/profile', text: "User"},
+      {name: "editProfile", link: '', text: "Edit Profile"}
+    ]
+  }
+}
+exports.userLocals = userLocals;
+
 /**
  * Ensure user Authenticated Middleware.
  */
@@ -134,7 +168,32 @@ exports.ensureAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/');
+  else{
+    console.log("[ensureAuthenticated] Warning: User is not Authenticated redirect to home.")
+    res.redirect('/');
+  }
+  
+}
+
+/**
+ * Validate result data.
+ */
+const validate = (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
+      res.locals.form = req.body;
+      return false;
+    }
+    else{
+      return true;
+    }
+  } catch (error) {
+    return false;
+  }
+  
+  
 }
 
 /**
@@ -142,15 +201,13 @@ exports.ensureAuthenticated = (req, res, next) => {
  */
  exports.loginUser = (req, res, next) => {
   // Validate incoming input
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
-    res.locals.form = req.body
+  if (!validate(req, res, next)) {
+    
     res.status(409).render('user/login');
   }
   else{
     //-> 
-    next(null, true);
+    next(err);
   }
 }
 
@@ -159,10 +216,8 @@ exports.ensureAuthenticated = (req, res, next) => {
  */
 exports.registerUser = (req, res, next) => {
   // Validate incoming input
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
-    res.locals.form = req.body
+  if (!validate(req, res, next)) {
+    
     res.status(409).render('user/register');
   }
   else{
@@ -184,12 +239,69 @@ exports.registerUser = (req, res, next) => {
   }
 }
 
+exports.updatePassword = (req, res, next) => {
+  // Validate incoming input
+  if (!validate(req, res, next)) {
+    
+    res.render('user/edit-password', { 
+      page: userLocals.editPassword
+    });
+  }
+  else{
+    User.findOneAndUpdate(
+      {"_id": req.body._id}, 
+      {"password": bcrypt.hashSync(req.body.password, 12)}, 
+      { new: false }, (err, user) =>   {
+      if (err){
+        console.log('[updatePassword] Error, redirect to home :', err)
+        next(err);
+      }
+      else{
+        req.flash('success', "Your password have been updated with success.");
+        console.log('[updatePassword] Ok go to next:', user)
+        next(null, user);
+      }
+    })
+  }
+}
+
+exports.updateProfile = (req, res, next) => {
+  // Validate incoming input
+  if (!validate(req, res, next)) {
+    
+    res.render('user/edit-profile', { 
+      page: userLocals.editProfile
+    });
+  }
+  else{
+    User.findOneAndUpdate(
+      {"_id": req.body._id},
+      {
+        "username": req.body.username,
+        "firstName": req.body.firstName,
+        "lastName": req.body.lastName,
+        "email": req.body.email,
+      },
+      { new: false }, (err, user) =>   {
+      if (err){
+        console.log('[updateProfile] Error, redirect to home :', err)
+        next(err);
+      }
+      else{
+        req.flash('success', "Your probile have been updated with success.");
+        console.log('[updateProfile] Ok go to next:', user)
+        next(null, user);
+      }
+    })
+  }
+}
+
 /**
- * Dummy register user middlware for test purpose
+ * Dummy middlware for test purpose
  * Only test post request and send json response.
  * Not affect data base.
  */
-exports.registerUserTest = (req, res, next) => {
+ exports.formFunctionalTest = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     //-> set an object of messages by field id's from errors array
@@ -203,39 +315,6 @@ exports.registerUserTest = (req, res, next) => {
   }
   else{
     res.status(200).json({status: true, form: req.body} );
-  }
-}
-
-exports.updatePassword = (req, res, next) => {
-  // Validate incoming input
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res.locals.errors = errors.errors.reduce((obj, e) => (obj[e.param] = {msg: e.msg}, obj), {});
-    res.locals.form = req.body
-    let page = {
-      name: "EditMyPassword",
-      title: "MyApp - Edit My Password",
-      breadcrumbs: [
-        {name: "User", link: '/profile', text: "User"},
-        {name: "EditMyPassword", link: '', text: "Edit My Password"}
-      ]
-    };
-    res.render('user/edit-password', { 
-      page: page
-    });
-  }
-  else{
-    User.findOneAndUpdate({"_id": req.body._id}, {"password": bcrypt.hashSync(req.body.password, 12)}, { new: false }, (err, user) =>   {
-      if (err){
-        console.log('[updatePassword] Error, redirect to home :', err)
-        next(err);
-      }
-      else{
-        req.flash('success', "Your password have been updated with success.");
-        console.log('[updatePassword] Ok go to next:', user)
-        next(null, user);
-      }
-    })
   }
 }
 
