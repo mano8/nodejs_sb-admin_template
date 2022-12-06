@@ -42,6 +42,15 @@ function Utils (){
     this.isPasswordChars = (value) => {
       return this.isStr(value) && /^([a-z0-9._\-@#$%+=]+)$/i.test(value)
     }
+
+    /*
+    * Test if value has valid password chars.
+    * can contain only [a-z0-9.\/_\-@#$%+]
+    */
+    this.isNameChars = (value) => {
+      return this.isStr(value) && /^([^._@#$%+=&²"<>(){}\[\]|\\\/°£$ø%µ*,?;:!]+)$/i.test(value)
+    }
+
     /*
     * Sanitize an email.
     *

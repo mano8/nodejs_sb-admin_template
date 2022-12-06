@@ -87,6 +87,17 @@ suite('Utils Unit Tests', function () {
       testArrayValues(false_values, 'isNotTrue', 'isPasswordChars', assert.isNotTrue, utils.isPasswordChars)
     });
 
+    test('isNameChars', function () {
+      const true_values = ['az12 éà~àçïô`u', '12345678']
+      const false_values = [
+        '12345678"F1@', '12345678<F1@', '12345678>F1@', "12345678F1@", "12345678(F1@",
+        'ba)zF1', 'ba{zF1', 'ba}zF1', 'ba[zF1', "ba]zF1", "ba*zF1", "ba/zF1",
+        1.0234, {g: 1}, [1, 2]
+      ]
+      testArrayValues(true_values, 'isTrue', 'isNameChars', assert.isTrue, utils.isNameChars)
+      testArrayValues(false_values, 'isNotTrue', 'isNameChars', assert.isNotTrue, utils.isNameChars)
+    });
+
     test('emailSanitizer', function () {
       assert.strictEqual(utils.emailSanitizer('az_12_dfgdfAF1'), 'az_12_dfgdfAF1', 'az_12_dfgdfAF1 sanitized with same result.');
       assert.strictEqual(utils.emailSanitizer('az_12@dfgdfA.F1'), 'az_12@dfgdfA.F1', 'az_12@dfgdfA.F1  sanitized with same result.');
