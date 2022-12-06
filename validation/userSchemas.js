@@ -7,6 +7,7 @@
  * ToDo: Need control valid chars of firstName, lastName
  */
 const { Types } = require('mongoose');
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const Utils = require('../utils/utils.js');
 const utils = new Utils();
@@ -34,6 +35,12 @@ const registrationSchema = {
     escape: true,
   },
   firstName: {
+    custom: {
+      options: value => {
+        return utils.isNameChars(value)
+      },
+      errorMessage: 'Invalid First Name, field do not contain special characters like [/_-@#$%+...].'
+    },
     notEmpty: [true, "First Name field cannot be empty"],
     isString: { errorMessage: "First Name should be string" },
     exists: { errorMessage: "First Name is required" },
@@ -41,6 +48,12 @@ const registrationSchema = {
     escape: true,
   },
   lastName: {
+    custom: {
+      options: value => {
+        return utils.isNameChars(value)
+      },
+      errorMessage: 'Invalid Last Name, field do not contain special characters like [/_-@#$%+...].'
+    },
     notEmpty: [true, "Last Name field cannot be empty"],
     isString: { errorMessage: "Last Name should be string" },
     exists: { errorMessage: "Last Name is required" },
@@ -126,15 +139,18 @@ const registrationSchema = {
  const editProfileSchema = {
   _id: {
     custom: {
-      options: (value, { req }) => {
+      options: value => {
           return User.findOne({
-            _id: Types.ObjectId(req.body._id)
+            _id: Types.ObjectId(value) || null
             })
-              .then((user) => {
-                  if (!utils.isObject(user) || user === {}) {
-                      return Promise.reject('Fatal Error, unable to find the user id.')
-                  }
-              })
+            .then((user) => {
+              if (!utils.isObject(user) || user === {}) {
+                  return Promise.reject('Fatal Error, unable to find the user id.')
+              }
+            })
+            .catch(error => {
+              return Promise.reject('Fatal Error, unable to find the user id.')
+            })
       }
     },
     isString: { errorMessage: "User id should be string" },
@@ -146,10 +162,52 @@ const registrationSchema = {
       }
     }
   },
-  username: registrationSchema.username,
+  username: {
+    custom: {
+      options: (value, { req }) => {
+        return User.find({_id: {$ne: req.body._id}, username: value})
+          .then(user => {
+              if (user.length > 0) {
+                  return Promise.reject('Username already in use')
+              }
+
+              if(!utils.iskey(value)){
+                return Promise.reject('Invalid username, field must contain only alphanumeric characters and `_`')
+              }
+          })
+      }
+    },
+    isString: { errorMessage: "Username should be string" },
+    exists: { errorMessage: "Username is required" },
+    trim: true,
+    escape: true,
+  },
   firstName: registrationSchema.firstName,
   lastName: registrationSchema.lastName,
-  email: registrationSchema.email
+  email: {
+    custom: {
+        options: (value, { req }) => {
+            return User.find({
+                _id: {$ne: req.body._id},
+                email: value
+            }).then(user => {
+                if (user.length > 0) {
+                    return Promise.reject('Email address already taken')
+                }
+
+                if(!utils.isEmailChars(value)){
+                  return Promise.reject('Invalid email, field must contain only alphanumeric and [a-z0-9._\-@] characters.')
+                }
+            })
+        }
+    },
+    isEmail: {errorMessage: "Email is not valid."},
+    isString: { errorMessage: "Email should be string" },
+    exists: { errorMessage: "Email is required" },
+    normalizeEmail: true,
+    trim: true,
+    escape: true,  
+  },
 }
   
   
@@ -165,14 +223,14 @@ const editPasswordSchema = {
             _id: req.body._id
             })
               .then((user) => {
-                  if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+                  if (!user || !bcrypt.compareSync(req.body.oldPassword, user.password)) {
                       return Promise.reject('Error, please verrify your old password.')
                   }
               })
       }
     },
     isString: { errorMessage: "Old Password should be string" },
-    exists: { errorMessage: "Old Password id is required" },
+    exists: { errorMessage: "Old Password is required" },
     trim: true,
     escape: true,
   },
