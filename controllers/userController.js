@@ -207,7 +207,7 @@ const validate = (req, res, next) => {
   }
   else{
     //-> 
-    next(err);
+    next();
   }
 }
 
