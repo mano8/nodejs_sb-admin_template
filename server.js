@@ -7,14 +7,12 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const flash = require('connect-flash');
-const LocalStrategy = require('passport-local');
-const path = require('path');
-const bcrypt = require('bcrypt');
-const crypto = require("crypto");
+
 require('dotenv').config();
 var MongoStore = require('connect-mongo');
-const User = require('./models/User')
-const apiRoutes = require('./routes/user.js');
+
+const publicRoutes = require('./routes/public.js');
+const userRoutes = require('./routes/user.js');
 const auth = require('./auth.js');
 const Utils = require('./utils/utils.js');
 let utils = new Utils();
@@ -60,50 +58,11 @@ app.use(passport.session());
 
 app.use(flash());
 
-const get_gravatar_hash = (email, s=80) => {
-  return (utils.isStr(email)) ? crypto.createHash('md5').update(email.trim().toLowerCase()).digest("hex") : false;
-}
 
-const get_gravatar_url = (hash, s=80) => {
-  if (utils.isStr(hash)){
-    s = parseInt(s)
-    s = (s > 10 && s <= 2048 ) ? s : 80;
-    return (utils.isStr(hash)) ? "https://www.gravatar.com/avatar/"+hash+".jpg?d=identicon&s="+s : ''
-  }
-  else return '';
-  
-}
-
-const getUserView = (user) => {
-  let result;
-  if(user){
-    result = {
-      _id: user._id,
-      username: user.username,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      name: user.firstName + ' ' + user.lastName,
-      email: user.email,
-      created_on: user.created_on,
-      updated_on: user.updated_on,
-      last_login: user.last_login,
-      login_count: user.login_count,
-    };
-
-    if(!utils.isStr(user.photo)){
-      const hash = get_gravatar_hash(user.email)
-      result.photo = get_gravatar_url(hash)
-      result.photo_20 = get_gravatar_url(hash, 20)
-      result.photo_400 = get_gravatar_url(hash, 400)
-    }
-  }
-  return result;
-}
 // Creating custom middleware with Express
 app.use((req, res, next) => {
   res.locals.doctype = 'html'
   res.locals.isAuthenticated = req.isAuthenticated();
-  res.locals.user = getUserView(req.user);
   if(req.session && req.session.messages){
     req.flash('error', req.session.messages);
     delete req.session.messages
@@ -122,32 +81,16 @@ app.use((req, res, next) => {
   next();
 });
 
+//User routes
+userRoutes(app);  
+
+//Public routes
+publicRoutes(app);  
+
+
+
 //Routing for API 
-apiRoutes(app);  
-
 auth();
-
-//Index page (static HTML)
-app.route('/')
-  .get(function (req, res) {
-    let page = {
-      name: "Dashboard",
-      title: "Dashboard",
-      breadcrumbs: [
-        {
-          name: "Dashboard",
-          link: '',
-          text: "Dashboard",
-        }
-      ]
-    }
-    console.log("Home page data: ", page)
-    res.render('index', { 
-      page: page
-    });
-  });
-
-
 
     
 //404 Not Found Middleware
