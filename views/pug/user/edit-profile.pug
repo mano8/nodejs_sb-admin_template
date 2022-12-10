@@ -1,59 +1,44 @@
-extends base-login.pug
+extends profile.pug
 
-block headTitle
-  title Edit Profile
-
-block headMeta
-  meta(name='description', content='Edit Profile page')
-  meta(name='author', content='Eli Serra')
-
-block pageContent
-  div#layoutAuthentication
-    div#layoutAuthentication_content
-      main 
-        div.container
-          div.row.justify-content-center
-            div.col-lg-5
-              div.card.shadow-lg.border-0.rounded-lg.mt-5
-                div.card-header
-                  h3.text-center.font-weight-light.my-4 MyApp - Edit Profile
-                div.card-body
-                  form(action='/edit-profile' method='post')
-                    if errors 
-                      - var errorTmp = false
-                    div.form-floating.mb-3
-                      - errorTmp = errors && errors.username ? errors.username : false
-                      input(class=errorTmp ? "form-control is-invalid" : "form-control" id="username" name="username" type="text" placeholder="username" value= form && form.username ? form.username : '' required)
-                      label(for="user_name") username
-                      if errorTmp.msg
-                        div.invalid-feedback
-                          | #{errorTmp.msg}
-                    div.form-floating.mb-3
-                      - errorTmp = errors && errors.firstName ? errors.firstName : false
-                      input(class=errorTmp ? "form-control is-invalid" : "form-control" id="firstName" name="firstName" type="text" placeholder="firstName" value= form && form.firstName ? form.firstName : '' required)
-                      label(for="user_name") first Name
-                      if errorTmp.msg
-                        div.invalid-feedback
-                          | #{errorTmp.msg}
-                    div.form-floating.mb-3
-                      - errorTmp = errors && errors.lastName ? errors.lastName : false
-                      input(class=errorTmp ? "form-control is-invalid" : "form-control" id="lastName" name="lastName" type="text" placeholder="lastName" value= form && form.lastName ? form.lastName : '' required)
-                      label(for="lastName") last Name
-                      if errorTmp.msg
-                        div.invalid-feedback
-                          | #{errorTmp.msg}
-                    div.form-floating.mb-3
-                      - errorTmp = errors && errors.email ? errors.email : false
-                      input(class=errorTmp ? "form-control is-invalid" : "form-control" id="email" name="email" type="email" placeholder="name@example.com" value= form && form.email ? form.email : '' required)
-                      label(for="email") Email address
-                      if errorTmp.msg
-                        div.invalid-feedback
-                          | #{errorTmp.msg}
-                    div.d-flex.align-items-center.justify-content-between.mt-4.mb-0
-                      button(class="btn btn-primary" role="button" type="submit") Register
-                      input(id="_id" name="_id" type="hidden" value= user && user._id ? user._id : '')
-                div.card-footer.text-center.py-3
-                  div.small
-                    a(href="/") Go home
-    div#layoutAuthentication_footer
-      include ../parts/footer.pug
+block rightPane
+  div.container
+    div.row.justify-content-center
+      div.col-lg-5
+        div.card.shadow-lg.border-0.rounded-lg.mt-5
+          div.card-header
+            h3.text-center.font-weight-light.my-4 MyApp - Edit Profile
+          div.card-body
+            form(action='/user/edit-profile' method='post')
+              if errors 
+                - var errorTmp = false
+              div.form-floating.mb-3
+                - errorTmp = errors && errors.username ? errors.username : false
+                input(class=errorTmp ? "form-control is-invalid" : "form-control" id="username" name="username" type="text" placeholder="username" value= form && form.username ? form.username : '' required)
+                label(for="user_name") username
+                if errorTmp.msg
+                  div.invalid-feedback
+                    | #{errorTmp.msg}
+              div.form-floating.mb-3
+                - errorTmp = errors && errors.firstName ? errors.firstName : false
+                input(class=errorTmp ? "form-control is-invalid" : "form-control" id="firstName" name="firstName" type="text" placeholder="firstName" value= form && form.firstName ? form.firstName : '' required)
+                label(for="user_name") first Name
+                if errorTmp.msg
+                  div.invalid-feedback
+                    | #{errorTmp.msg}
+              div.form-floating.mb-3
+                - errorTmp = errors && errors.lastName ? errors.lastName : false
+                input(class=errorTmp ? "form-control is-invalid" : "form-control" id="lastName" name="lastName" type="text" placeholder="lastName" value= form && form.lastName ? form.lastName : '' required)
+                label(for="lastName") last Name
+                if errorTmp.msg
+                  div.invalid-feedback
+                    | #{errorTmp.msg}
+              div.form-floating.mb-3
+                - errorTmp = errors && errors.email ? errors.email : false
+                input(class=errorTmp ? "form-control is-invalid" : "form-control" id="email" name="email" type="email" placeholder="name@example.com" value= form && form.email ? form.email : '' required)
+                label(for="email") Email address
+                if errorTmp.msg
+                  div.invalid-feedback
+                    | #{errorTmp.msg}
+              div.d-flex.align-items-center.justify-content-between.mt-4.mb-0
+                button(class="btn btn-primary" role="button" type="submit") Register
+                input(id="_id" name="_id" type="hidden" value= user && user._id ? user._id : '')
