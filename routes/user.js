@@ -1,11 +1,17 @@
 'use strict';
 const passport = require('passport');
 const User = require('../models/User')
+const File = require('../models/File')
 const mid = require('../controllers/userController.js')
 const userSchemas = require('../validation/userSchemas.js')
 const {body, checkSchema, validationResult} = require('express-validator');
 
 module.exports = (app) => {
+
+  app.use((req, res, next) => {
+    res.locals.user = mid.getUserView(req.user);
+    next();
+  })
   /**
    * User login routes
    */
@@ -111,10 +117,17 @@ module.exports = (app) => {
   
   app.route('/user/edit-avatar')
     .get(mid.ensureAuthenticated, function(req, res) {
-      res.json({'error': 'This functionality is not ready.'});
+      res.render('user/edit-avatar', { 
+        page: mid.userLocals.editAvatar
+      });
     })
-    .post(mid.ensureAuthenticated, function(req, res) {
-      res.json({'error': 'This functionality is not ready.'});
+    .post([
+      mid.ensureAuthenticated,
+      mid.upload.single('avatar'),
+      mid.updateAvatar
+    ], function(req, res) {
+      console.log('[EditAvatar] Password updated, redirect to profile:')
+      res.redirect('/profile');
     });
   
   app.route('/user/edit-password')
