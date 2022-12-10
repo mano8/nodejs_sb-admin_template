@@ -98,6 +98,19 @@ suite('Utils Unit Tests', function () {
       testArrayValues(false_values, 'isNotTrue', 'isNameChars', assert.isNotTrue, utils.isNameChars)
     });
 
+    test('getExtFromMimeType', function () {
+      assert.strictEqual(utils.getExtFromMimeType('type/jpeg'), 'jpeg');
+      assert.strictEqual(utils.getExtFromMimeType(''), null);
+      assert.strictEqual(utils.getExtFromMimeType('type/'), null);
+    
+    });
+
+    test('alphanumSanitizer', function () {
+      assert.strictEqual(utils.alphanumSanitizer('az_12_dfgdfAF1'), 'az_12_dfgdfAF1', 'az_12_dfgdfAF1 not sanitized.');
+      assert.strictEqual(utils.alphanumSanitizer('az_12@dfgdfA.F1'), 'az_12dfgdfAF1', 'az_12@dfgdfA.F1 not sanitized.');
+    
+    });
+
     test('emailSanitizer', function () {
       assert.strictEqual(utils.emailSanitizer('az_12_dfgdfAF1'), 'az_12_dfgdfAF1', 'az_12_dfgdfAF1 sanitized with same result.');
       assert.strictEqual(utils.emailSanitizer('az_12@dfgdfA.F1'), 'az_12@dfgdfA.F1', 'az_12@dfgdfA.F1  sanitized with same result.');

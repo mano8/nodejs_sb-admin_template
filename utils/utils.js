@@ -91,7 +91,7 @@ function Utils (){
     }
 
     this.getExtFromMimeType = (mimetype) => {
-      return (this.isStr(mimetype)) ? mimetype.split('/')[1] : null;
+      return (this.isStr(mimetype) && mimetype !== '' && mimetype.split('/')[1]) ? mimetype.split('/')[1] : null;
     }
   }
   
