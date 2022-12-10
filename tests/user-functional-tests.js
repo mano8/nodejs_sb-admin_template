@@ -259,29 +259,7 @@ suite('Functional Tests', function() {
   });
 
   suite('test User POST /json-test/edit-profile', function (){
-    test('test ok', function (done) {
-      chai
-        .request(server)
-        .post('/json-test/edit-profile')
-        .set('content-type', 'application/x-www-form-urlencoded')
-        .send({
-          _id: ''+user_test._id,
-          username: 'userTest1234',
-          firstName: 'first Name test',
-          lastName: 'last Name test',
-          email: 'test.ddf@tst.zs'
-        })
-        .end(function (err, res) {
-          assert.strictEqual(err, null);
-          assert.strictEqual(res.status, 200);
-          assert.strictEqual(res.body.status, true);
-          assert.strictEqual(res.body.form.username, 'userTest1234');
-          assert.strictEqual(res.body.form.firstName, 'first Name test');
-          assert.strictEqual(res.body.form.lastName, 'last Name test');
-          assert.strictEqual(res.body.form.email, 'test.ddf@tst.zs');
-        });
-    });
-
+    
     test('Test no changes', function (done) {
       chai
         .request(server)
@@ -328,4 +306,5 @@ suite('Functional Tests', function() {
         });
     });
   });
+
 });
