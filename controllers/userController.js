@@ -4,9 +4,18 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 var axios = require("axios");
 const User = require('../models/User');
-const Utils = require('../utils/utils.js');
 const {body, checkSchema, validationResult} = require('express-validator');
+const Utils = require('../utils/utils.js');
+const MulterHelper = require('../utils/multer.js');
+const Gravatar = require('../utils/gravatar.js');
+const fileController = require('./fileController.js')
 let utils = new Utils();
+let gravatar = new Gravatar();
+
+
+let multerHelper = new MulterHelper();
+multerHelper.setUpload('image', 'avatar');
+exports.upload = multerHelper.upload;
 
 
 const userData = {
@@ -106,7 +115,6 @@ const AddNewUser = (user_data, done) => {
     } catch (error) {
       done(error, null);
     }
-    
   };
 
 const getUserById = (user_id, done) => {
@@ -157,10 +165,54 @@ const userLocals = {
       {name: "User", link: '/profile', text: "User"},
       {name: "editProfile", link: '', text: "Edit Profile"}
     ]
+  },
+  editAvatar: {
+    title: "Edit Avatar",
+    breadcrumbs: [
+      {name: "User", link: '/profile', text: "User"},
+      {name: "editAvatar", link: '', text: "Edit Avatar"}
+    ]
   }
 }
 exports.userLocals = userLocals;
 
+
+const get_gravatar_hash = (email, s=80) => {
+  return (utils.isStr(email)) ? crypto.createHash('md5').update(email.trim().toLowerCase()).digest("hex") : false;
+}
+
+const get_gravatar_url = (hash, s=80) => {
+  if (utils.isStr(hash)){
+    s = parseInt(s)
+    s = (s > 10 && s <= 2048 ) ? s : 80;
+    return (utils.isStr(hash)) ? "https://www.gravatar.com/avatar/"+hash+".jpg?d=identicon&s="+s : ''
+  }
+  else return '';
+  
+}
+
+exports.getUserView = (user) => {
+  let result;
+  if(user){
+    result = {
+      _id: user._id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      name: user.firstName + ' ' + user.lastName,
+      email: user.email,
+      created_on: user.created_on,
+      updated_on: user.updated_on,
+      last_login: user.last_login,
+      login_count: user.login_count,
+    };
+
+    if(!utils.isStr(user.photo) || user.photo === ''){
+      result.photo = gravatar.getAvatar(user.email);
+    }
+  }
+  return result;
+}
 /**
  * Ensure user Authenticated Middleware.
  */
@@ -296,6 +348,49 @@ exports.updateProfile = (req, res, next) => {
   }
 }
 
+
+
+exports.updateAvatar = (req, res, next) => {
+  const date = new Date();
+  fileController.createFile({
+    filename: req.file.filename,
+    name: `avatar_${res.locals.user.username}`,
+    ext: utils.getExtFromMimeType(req.file.mimetype),
+    title: `${res.locals.user.name} Avatar`,
+    alt: `${res.locals.user.name} Avatar`,
+    size: req.file.size,
+    category: 'avatar',
+    created_by: res.locals.user._id,
+    updated_by: res.locals.user._id,
+    created_on: date.toISOString(),
+    updated_on: date.toISOString()
+    }, (err, file) => {
+      if(err){
+        req.flash('error', "Unable to register uploaded file data.");
+        res.redirect('/profile');
+      }
+      else{
+        User.findOneAndUpdate(
+          {"_id": req.body._id},
+          {
+            "updated_on": date.toISOString(),
+            "photo": file._id
+          },
+          (u_err, u_data) =>{
+            if(err){
+              req.flash('error', "Unable to update user data.");
+            }
+            else{
+              console.log('[EditAvatar] Avatar updated, redirect to profile:')
+              req.flash('success', "Your avatar have been updated with success.");
+              res.redirect('/profile');
+            }
+            
+          }
+        )
+      }
+  })
+}
 /**
  * Dummy middlware for test purpose
  * Only test post request and send json response.
