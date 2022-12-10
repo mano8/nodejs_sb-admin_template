@@ -1,0 +1,23 @@
+extends profile.pug
+
+block rightPane
+  div.container
+    div.row.justify-content-center
+      div.col-lg-5
+        div.card.shadow-lg.border-0.rounded-lg.mt-5
+          div.card-header
+            h3.text-center.font-weight-light.my-4 Edit Password
+          div.card-body
+            if errors 
+              - var errorTmp = false
+            form(action='/user/edit-avatar' method='post' enctype="multipart/form-data")
+              div.mb-3
+                - errorTmp = errors && errors.avatar ? errors.avatar : false
+                label(for="avatar" class="form-label") Avatar image
+                input(class=errorTmp ? "form-control is-invalid" : "form-control" id="avatar" name="avatar" type="file" required)
+                if errorTmp.msg
+                  div.invalid-feedback
+                    | #{errorTmp.msg}
+              div.d-flex.align-items-center.justify-content-between.mt-4.mb-0
+                button(class="btn btn-primary" role="button" type="submit") Upload
+                input(id="_id" name="_id" type="hidden" value= user && user._id ? user._id : '')
