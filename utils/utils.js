@@ -1,3 +1,10 @@
+/**
+ * utils.js
+ * 
+ */
+ 'use strict';
+const crypto = require("crypto");
+
 function Utils (){
     this.isObject = (value) => {
       return typeof value === 'object' && !Array.isArray(value) && value !== null
@@ -52,6 +59,14 @@ function Utils (){
     }
 
     /*
+    * Sanitize an alphanumeric value.
+    *
+    */
+    this.alphanumSanitizer = (value, defaultValue='') => {
+      return (this.isStr(value)) ? value.replace(/([^a-z0-9_]+)/gi, '') : defaultValue;
+    }
+
+    /*
     * Sanitize an email.
     *
     */
@@ -65,6 +80,18 @@ function Utils (){
     */
     this.passwordSanitizer = (value) => {
       return value.replace(/([^a-z0-9._\-@]+)/gi, '');
+    }
+
+    /*
+    * hash string value with md5 hex.
+    *
+    */
+    this.getHash = (value) => {
+      return (this.isStr(value)) ? crypto.createHash('md5').update(value.trim().toLowerCase()).digest("hex") : null;
+    }
+
+    this.getExtFromMimeType = (mimetype) => {
+      return (this.isStr(mimetype)) ? mimetype.split('/')[1] : null;
     }
   }
   
