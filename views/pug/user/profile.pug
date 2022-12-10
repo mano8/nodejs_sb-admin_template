@@ -24,48 +24,23 @@ block pageContent
           a(href="/user/edit-avatar")
             div.profile-img-edit
                 i.fa-solid.fa-pencil.fa-xl
-          img(src=(user.photo) ? user.photo_400 : "/public/assets/img/index.png" class="card-img-top profile-img" alt="...")
+          img(src=(user.photo) ? user.photo : "/public/assets/img/index.png" class="card-img-top profile-img" alt="..." width="400"  height="400")
           
         div.card-body 
             h3.card-title #{user.name} (#{user.username})
-            h4.card-subtitle.mb-2.text-muted.small #{user.username}
+            h4.card-subtitle.mb-2.text-muted.small #{user.email}
             
-            div.card-text ....
+            div.card-text
+              button(type="button" class="btn btn-outline-light")
+                | Change password
 
         div.card-footer.d-flex.align-items-center.justify-content-between
           a(class="small text-white stretched-link" href="#") View Details
           div.small.text-white
             i.fas.fa-angle-right
     div.col-xl-8.col-md-6
-      div.container-fluid.px-4
-        div.row
-          div.col-xl-3.col-md-6
-            div.card.bg-primary.text-white.mb-4
-              div.card-body Primary Card
-              div.card-footer.d-flex.align-items-center.justify-content-between
-                a(class="small text-white stretched-link" href="#") View Details
-                div.small.text-white
-                  i.fas.fa-angle-right
-          div.col-xl-3.col-md-6
-            div.card.bg-warning.text-white.mb-4
-              div.card-body Warning Card
-              div.card-footer.d-flex.align-items-center.justify-content-between
-                a(class="small text-white stretched-link" href="#") View Details
-                div.small.text-white
-                  i.fas.fa-angle-right
-          div.col-xl-3.col-md-6
-            div.card.bg-success.text-white.mb-4
-              div.card-body Success Card
-              div.card-footer.d-flex.align-items-center.justify-content-between
-                a(class="small text-white stretched-link" href="#") View Details
-                div.small.text-white
-                  i.fas.fa-angle-right
-          div.col-xl-3.col-md-6
-            div.card.bg-warning.text-white.mb-4
-              div.card-body Warning Card
-              div.card-footer.d-flex.align-items-center.justify-content-between
-                a(class="small text-white stretched-link" href="#") View Details
-                div.small.text-white
-                  i.fas.fa-angle-right
+      block rightPane
+      
+          
           
     
